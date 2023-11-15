@@ -1,0 +1,9 @@
+
+Str_SQL = Str_SQL & "UNION SELECT T_attendC.[ステータス], T_attendC.社員No, T_attendC.氏名, T_attendC.所属No, T_attendC.所属名, "
+Str_SQL = Str_SQL & "T_attendC.出勤日数, T_attendC.欠勤日数, T_attendC.有休日数, T_attendC.[特休日数(有給], T_attendC.[特休日数(無給)], "
+Str_SQL = Str_SQL & "T_attendC.代休日数, T_attendC.出勤時間, T_attendC.遅刻早退時間, T_attendC.普通残業時間, T_attendC.深夜残業時間, "
+Str_SQL = Str_SQL & "T_attendC.所定内残業時間, T_attendC.法外休日出勤時間, T_attendC.法外休日深夜時間, T_attendC.法定休日時間, "
+Str_SQL = Str_SQL & "T_attendC.法定休日深夜時間, T_attendC.[45h超過残業], T_attendC.[60h超過残業], T_attendC.[深夜所定時間25%], "
+Str_SQL = Str_SQL & "T_attendC.[法定割増時間35%], T_attendC.宿日直回数 "
+Str_SQL = Str_SQL & "FROM T_attendC LEFT JOIN T_differential ON T_attendC.社員No = T_differential.社員No "
+Str_SQL = Str_SQL & "WHERE ((T_differential.社員No) Is Null);"

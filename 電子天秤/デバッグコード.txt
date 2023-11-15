@@ -1,0 +1,638 @@
+              Public Function Fnc_Debug_LOG(ByVal Str_Module_ID As String, ByVal Int_Mode As Short, ByVal Str_Message01 As String, Optional ByVal Str_Message02 As String = "") As Short
+                      ''************************************************************************************************
+                            ''*                                                                                             *
+                            ''* Fnc_Debug_LOG                                                                               *
+                            ''*                                                                                             *
+                      ''************************************************************************************************
+                            ''*                                                                                             *
+                            ''* Detail  :   デバッグ用ログ出力                                                              *
+                            ''*                                                                                             *
+                            ''*----------------------------------------------------------------------------------------------*
+                            ''*                                                                                             *
+                            ''* Param   :       Non                                                                      *
+                            ''*                                                                                             *
+                            ''*----------------------------------------------------------------------------------------------*
+                            ''*                                                                                             *
+                            ''* Return  :       カレントディレクトリ                                                        *
+                            ''*                                                                                             *
+                      ''************************************************************************************************
+                            
+                            Dim Int_Out_Flg As Short
+                            Dim Str_Msg As String
+                            Dim Str_Wk_Msg As String
+                            Dim Int_DMode As Short
+                            Dim Int_IDMode As Short
+                            
+                            On Error GoTo Err_Fnc_Debug_LOG
+                            
+                            Fnc_Debug_LOG = False
+                            
+                            Int_Out_Flg = False
+                            
+                            Int_DMode = Ini_Int_Debug_Mode Mod 10
+                            Int_IDMode = Int_Mode Mod 10
+                            
+                            Select Case Int_IDMode
+                                          Case 0
+                                                        If 0 = Int_IDMode Then
+                                                                      Int_Out_Flg = True
+                                                        End If
+                                          Case 1 To 8
+                                                        If Int_DMode >= Int_IDMode Then
+                                                                      Int_Out_Flg = True
+                                                        End If
+                                                        ''          If Ini_Int_Debug_Mode <> 0 Then
+                                                        ''              Int_Out_Flg = True
+                                                        ''          End If
+                                          Case 9
+                                                        ''* 強制出力用
+                                                        Int_Out_Flg = True
+                                          Case Else
+                            End Select
+                            
+                            If Int_Out_Flg = True Then
+                                          Str_Msg = ""
+                                          Select Case Int(Int_Mode / 10)
+                                                        Case 1
+                                                                      ''* 開始用
+                                                                      Lng_Log_Hierarchy = Lng_Log_Hierarchy + 1
+                                                                      Str_Msg = Str_Msg & Con_Debug_LOG_Add_0101
+                                                                      Str_Msg = Str_Msg & "『"
+                                                                      Str_Msg = Str_Msg & Str_Module_ID
+                                                                      Str_Msg = Str_Msg & "』"
+                                                                      Str_Msg = Str_Msg & Str_Message01
+                                                                      Str_Msg = Str_Msg & Con_Debug_LOG_Add_0102
+                                                                      Str_Msg = Str_Msg & Str_Message02
+                                                        Case 2
+                                                                      ''* 終了用
+                                                                      Str_Msg = Str_Msg & Con_Debug_LOG_Add_0201
+                                                                      Str_Msg = Str_Msg & "『"
+                                                                      Str_Msg = Str_Msg & Str_Module_ID
+                                                                      Str_Msg = Str_Msg & "』"
+                                                                      Str_Msg = Str_Msg & Str_Message01
+                                                                      Str_Msg = Str_Msg & Con_Debug_LOG_Add_0202
+                                                                      Str_Msg = Str_Msg & Str_Message02
+                                                        Case 9
+                                                                      ''* エラー出力用
+                                                                      Str_Msg = Str_Msg & Con_Debug_LOG_Add_0901
+                                                                      Str_Msg = Str_Msg & "『"
+                                                                      Str_Msg = Str_Msg & Str_Module_ID
+                                                                      Str_Msg = Str_Msg & "』"
+                                                                      Str_Msg = Str_Msg & Str_Message01
+                                                                      Str_Msg = Str_Msg & Con_Debug_LOG_Add_0902
+                                                                      Str_Msg = Str_Msg & Str_Message02
+                                                        Case Else
+                                                                      ''* その他出力用
+                                                                      Str_Msg = Str_Msg & Con_Debug_LOG_Add_0001
+                                                                      Str_Msg = Str_Msg & "『"
+                                                                      Str_Msg = Str_Msg & Str_Module_ID
+                                                                      Str_Msg = Str_Msg & "』"
+                                                                      Str_Msg = Str_Msg & Str_Message01
+                                                                      Str_Msg = Str_Msg & Con_Debug_LOG_Add_0002
+                                                                      Str_Msg = Str_Msg & Str_Message02
+                                          End Select
+                                          
+                                          Str_Wk_Msg = ""
+                                          Str_Wk_Msg = Str_Wk_Msg & VB6.Format(Now, "yyyy/mm/dd hh:nn:ss")
+                                          Str_Wk_Msg = Str_Wk_Msg & New String("-", Lng_Log_Hierarchy)
+                                          
+                                          Select Case Int(Int_Mode / 10)
+                                                        Case 1
+                                                                      ''* 開始用
+                                                                      ''              Lng_Log_Hierarchy = Lng_Log_Hierarchy + 1
+                                                        Case 2
+                                                                      ''* 終了用
+                                                                      Lng_Log_Hierarchy = Lng_Log_Hierarchy - 1
+                                                        Case 9
+                                                                      ''* エラー出力用
+                                                        Case Else
+                                                                      ''* その他出力用
+                                          End Select
+                                          
+                                          Debug.Print(Str_Wk_Msg & Str_Msg)
+                                          If Int_Out_Flg = True Then
+                                                        Debug.Print("Log_Out")
+                                                        ''          If Ini_Int_Debug_Mode > 5 Then
+                                                        'UPGRADE_WARNING: オブジェクト Ret の既定プロパティを解決できませんでした。 詳細については、'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"' をクリックしてください。
+                                                        Ret = Fnc_Log_Write("＜＜" & Str_Wk_Msg & Str_Msg & "＞＞")
+                                                        ''          End If
+                                          End If
+                            End If
+                            
+                            Fnc_Debug_LOG = True
+                            
+Exit_Fnc_Debug_LOG: 
+                            
+                            On Error GoTo 0
+                            
+                            Exit Function
+                            
+Err_Fnc_Debug_LOG: 
+                            
+                            ''* エラー・ログ出力
+                            ''  Ret = Fnc_Err(Err, Str_ModuleID)
+                            
+                            GoTo Exit_Fnc_Debug_LOG
+                            
+              End Function
+
+              Public Function Fnc_Log_Write(ByRef Str_Data As String, Optional ByRef Int_Log_Mode As Short = False) As Short
+                      ''************************************************************************************************
+                            ''*                                                                                             *
+                            ''* Fnc_Log_Write                                                                               *
+                            ''*                                                                                             *
+                      ''************************************************************************************************
+                            ''*                                                                                             *
+                            ''* Detail  :   ログ出力処理                                                                    *
+                            ''*                                                                                             *
+                            ''*----------------------------------------------------------------------------------------------*
+                            ''*                                                                                             *
+                            ''* Param   :       Non                                                                      *
+                            ''*                                                                                             *
+                            ''*----------------------------------------------------------------------------------------------*
+                            ''*                                                                                             *
+                            ''* Return  :       Non                                                                      *
+                            ''*                                                                                             *
+                      ''************************************************************************************************
+                            
+                            Dim Str_ModuleID As String ''* モジュールＩＤ
+                            Dim Lng_File_No As Integer
+                            Dim Str_Log_File_Name As String
+                            Dim Str_Log_File_Ext As String
+                            
+                            ''* モジュールＩＤ登録
+                            Str_ModuleID = "Fnc_Log_Write"
+                            
+                            On Error GoTo Err_Fnc_Log_Write
+                            
+                            Fnc_Log_Write = False
+                            
+                            ''  ''* 開始・メッセージ
+                            ''  Ret = Fnc_Debug_LOG(Str_ModuleID, 86, "Start")
+                            
+                            If Int_Log_Mode = False Then
+                                          ''* 通常ログモード
+                                          ''      Str_Log_File_Name = Format(Now(), "yyyymmdd") & "_LOG.TXT"
+                                          Str_Log_File_Ext = Ini_Str_Log_File_Name_Ext
+                                          If Left(Str_Log_File_Ext, 1) = "." Then
+                                                        ''OK
+                                          Else
+                                                        ''Add
+                                                        Str_Log_File_Ext = "." & Str_Log_File_Ext
+                                          End If
+                                          
+                                          Str_Log_File_Name = Ini_Str_Log_File_Name & "_" & VB6.Format(Now, Ini_Str_Log_File_Name_Add_FMT) & Str_Log_File_Ext
+                                          
+                                          'UPGRADE_WARNING: オブジェクト Ret の既定プロパティを解決できませんでした。 詳細については、'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"' をクリックしてください。
+                                          Ret = Fnc_LogFile_Open(Lng_File_No, Str_Log_File_Name)
+                                          
+                                          ''* エラー処理
+                                          'UPGRADE_WARNING: オブジェクト Ret の既定プロパティを解決できませんでした。 詳細については、'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"' をクリックしてください。
+                                          If Ret <> True Then
+                                                        GoTo Exit_Fnc_Log_Write
+                                          End If
+                                          
+                                          'UPGRADE_WARNING: オブジェクト Ret の既定プロパティを解決できませんでした。 詳細については、'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"' をクリックしてください。
+                                          Ret = Fnc_LogFile_Put(Lng_File_No, Str_Data)
+                                          
+                                          ''* エラー処理
+                                          'UPGRADE_WARNING: オブジェクト Ret の既定プロパティを解決できませんでした。 詳細については、'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"' をクリックしてください。
+                                          If Ret <> True Then
+                                                        GoTo Exit_Fnc_Log_Write
+                                          End If
+                                          
+                                          'UPGRADE_WARNING: オブジェクト Ret の既定プロパティを解決できませんでした。 詳細については、'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"' をクリックしてください。
+                                          Ret = Fnc_LogFile_Close(Lng_File_No)
+                                          
+                                          ''* エラー処理
+                                          'UPGRADE_WARNING: オブジェクト Ret の既定プロパティを解決できませんでした。 詳細については、'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"' をクリックしてください。
+                                          If Ret <> True Then
+                                                        GoTo Exit_Fnc_Log_Write
+                                          End If
+                                          
+                            Else
+                                          ''* ループ・ログモード
+                                          ''* 現在未作成です。
+                            End If
+                            
+                            Fnc_Log_Write = True
+                            
+Exit_Fnc_Log_Write: 
+                            
+                            ''      ''* 終了・メッセージ
+                            ''  Ret = Fnc_Debug_LOG(Str_ModuleID, 87, "End")
+                            
+                            On Error GoTo 0
+                            
+                            Exit Function
+                            
+Err_Fnc_Log_Write: 
+                            
+                            ''* エラー・ログ出力
+                            'UPGRADE_WARNING: オブジェクト Ret の既定プロパティを解決できませんでした。 詳細については、'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"' をクリックしてください。
+                            Ret = Fnc_Err(Err, Str_ModuleID)
+                            
+                            GoTo Exit_Fnc_Log_Write
+                            
+              End Function
+
+              Public Function Fnc_File_Open(ByRef Lng_File_No As Integer, ByRef Str_File_Name As String, ByRef Int_File_Mode As Short, Optional ByRef Lng_Length As Integer = -1, Optional ByRef Int_Access_Mode As Short = -1) As Short
+                      ''************************************************************************************************
+                            ''*                                                                                             *
+                            ''* Fnc_File_Open                                                                               *
+                            ''*                                                                                             *
+                      ''************************************************************************************************
+                            ''*                                                                                             *
+                            ''* Detail  :   ファイル・オープン処理を行います。                                              *
+                            ''*                                                                                             *
+                            ''*----------------------------------------------------------------------------------------------*
+                            ''*                                                                                             *
+                            ''* Param   :       Non                                                                      *
+                            ''*                                                                                             *
+                            ''*----------------------------------------------------------------------------------------------*
+                            ''*                                                                                             *
+                            ''* Return  :       Non                                                                      *
+                            ''*                                                                                             *
+                      ''************************************************************************************************
+                            
+                            Dim Str_ModuleID As String ''* モジュールＩＤ
+                            
+                            ''* モジュールＩＤ登録
+                            Str_ModuleID = "Fnc_File_Open"
+                            
+                            On Error GoTo Err_Fnc_File_Open
+                            
+                            Fnc_File_Open = False
+                            
+                            ''  ''* 開始・メッセージ
+                            ''  Ret = Fnc_Debug_LOG(Str_ModuleID, 86, "Start")
+                            
+                            Lng_File_No = FreeFile
+                            
+                            ''* ファイル・モード
+                            Select Case Int_File_Mode
+                                          Case 0 ''* 『Random』モード
+                                                        If Lng_Length = -1 Then
+                                                                      ''* レコード長指定・無し
+                                                                      
+                                                                      ''* アクセス・モード
+                                                                      Select Case Int_Access_Mode
+                                                                                    Case 1 ''* 『Read』モード
+                                                                                                  FileOpen(Lng_File_No, Str_File_Name, OpenMode.Random, OpenAccess.Read)
+                                                                                    Case 2 ''* 『Write』モード
+                                                                                                  FileOpen(Lng_File_No, Str_File_Name, OpenMode.Random, OpenAccess.Write)
+                                                                                    Case 3 ''* 『Read Write』モード
+                                                                                                  FileOpen(Lng_File_No, Str_File_Name, OpenMode.Random, OpenAccess.ReadWrite)
+                                                                                    Case Else ''* 指定無し
+                                                                                                  FileOpen(Lng_File_No, Str_File_Name, OpenMode.Random)
+                                                                      End Select
+                                                        Else
+                                                                      ''* レコード長指定・有り
+                                                                      
+                                                                      ''* アクセス・モード
+                                                                      Select Case Int_Access_Mode
+                                                                                    Case 1 ''* 『Read』モード
+                                                                                                  FileOpen(Lng_File_No, Str_File_Name, OpenMode.Random, OpenAccess.Read, , Lng_Length)
+                                                                                    Case 2 ''* 『Write』モード
+                                                                                                  FileOpen(Lng_File_No, Str_File_Name, OpenMode.Random, OpenAccess.Write, , Lng_Length)
+                                                                                    Case 3
+                                                                                                  FileOpen(Lng_File_No, Str_File_Name, OpenMode.Random, OpenAccess.ReadWrite, , Lng_Length)
+                                                                                    Case Else ''* 指定無し
+                                                                                                  FileOpen(Lng_File_No, Str_File_Name, OpenMode.Random, , , Lng_Length)
+                                                                      End Select
+                                                        End If
+                                          Case 1 ''* 『Append』モード
+                                                        If Lng_Length = -1 Then
+                                                                      ''* レコード長指定・無し
+                                                                      
+                                                                      ''* アクセス・モード
+                                                                      Select Case Int_Access_Mode
+                                                                                    Case 1 ''* 『Read』モード
+                                                                                                  ''* 指定されたモードは矛盾が有ります
+                                                                                                  'UPGRADE_WARNING: オブジェクト Ret の既定プロパティを解決できませんでした。 詳細については、'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"' をクリックしてください。
+                                                                                                  Ret = MsgBox("指定されたモードは矛盾が有ります。" & vbCrLf & vbCrLf & "Int_File_Mode=" & Int_File_Mode & vbCrLf & "Int_Access_Mode=" & Int_Access_Mode, MsgBoxStyle.OKOnly)
+                                                                                                  ''                      Open Str_File_Name For append Access Read As #Lng_File_No
+                                                                                    Case 2 ''* 『Write』モード
+                                                                                                  FileOpen(Lng_File_No, Str_File_Name, OpenMode.Append, OpenAccess.Write)
+                                                                                    Case 3 ''* 『Read Write』モード
+                                                                                                  FileOpen(Lng_File_No, Str_File_Name, OpenMode.Append, OpenAccess.ReadWrite)
+                                                                                    Case Else ''* 指定無し
+                                                                                                  FileOpen(Lng_File_No, Str_File_Name, OpenMode.Append)
+                                                                      End Select
+                                                        Else
+                                                                      ''* レコード長指定・有り
+                                                                      
+                                                                      ''* アクセス・モード
+                                                                      Select Case Int_Access_Mode
+                                                                                    Case 1 ''* 『Read』モード
+                                                                                                  'UPGRADE_WARNING: オブジェクト Ret の既定プロパティを解決できませんでした。 詳細については、'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"' をクリックしてください。
+                                                                                                  Ret = MsgBox("指定されたモードは矛盾が有ります。" & vbCrLf & vbCrLf & "Int_File_Mode=" & Int_File_Mode & vbCrLf & "Int_Access_Mode=" & Int_Access_Mode, MsgBoxStyle.OKOnly)
+                                                                                                  ''                      Open Str_File_Name For append Access Read As #Lng_File_No Len = Lng_Length
+                                                                                    Case 2 ''* 『Write』モード
+                                                                                                  FileOpen(Lng_File_No, Str_File_Name, OpenMode.Append, OpenAccess.Write, , Lng_Length)
+                                                                                    Case 3 ''* 『Read Write』モード
+                                                                                                  FileOpen(Lng_File_No, Str_File_Name, OpenMode.Append, OpenAccess.ReadWrite, , Lng_Length)
+                                                                                    Case Else ''* 指定無し
+                                                                                                  FileOpen(Lng_File_No, Str_File_Name, OpenMode.Append, , , Lng_Length)
+                                                                      End Select
+                                                        End If
+                                          Case 2 ''* 『Binary』モード
+                                                        If Lng_Length = -1 Then
+                                                                      ''* レコード長指定・無し
+                                                                      
+                                                                      ''* アクセス・モード
+                                                                      Select Case Int_Access_Mode
+                                                                                    Case 1 ''* 『Read』モード
+                                                                                                  FileOpen(Lng_File_No, Str_File_Name, OpenMode.Binary, OpenAccess.Read)
+                                                                                    Case 2 ''* 『Write』モード
+                                                                                                  FileOpen(Lng_File_No, Str_File_Name, OpenMode.Binary, OpenAccess.Write)
+                                                                                    Case 3 ''* 『Read Write』モード
+                                                                                                  FileOpen(Lng_File_No, Str_File_Name, OpenMode.Binary, OpenAccess.ReadWrite)
+                                                                                    Case Else ''* 指定無し
+                                                                                                  FileOpen(Lng_File_No, Str_File_Name, OpenMode.Binary)
+                                                                      End Select
+                                                        Else
+                                                                      ''* レコード長指定・有り
+                                                                      
+                                                                      ''* アクセス・モード
+                                                                      Select Case Int_Access_Mode
+                                                                                    Case 1 ''* 『Read』モード
+                                                                                                  FileOpen(Lng_File_No, Str_File_Name, OpenMode.Binary, OpenAccess.Read, , Lng_Length)
+                                                                                    Case 2 ''* 『Write』モード
+                                                                                                  FileOpen(Lng_File_No, Str_File_Name, OpenMode.Binary, OpenAccess.Write, , Lng_Length)
+                                                                                    Case 3 ''* 『Read Write』モード
+                                                                                                  FileOpen(Lng_File_No, Str_File_Name, OpenMode.Binary, OpenAccess.ReadWrite, , Lng_Length)
+                                                                                    Case Else ''* 指定無し
+                                                                                                  FileOpen(Lng_File_No, Str_File_Name, OpenMode.Binary, , , Lng_Length)
+                                                                      End Select
+                                                        End If
+                                          Case 3 ''* 『Input』モード
+                                                        If Lng_Length = -1 Then
+                                                                      ''* レコード長指定・無し
+                                                                      
+                                                                      ''* アクセス・モード
+                                                                      Select Case Int_Access_Mode
+                                                                                    Case 1 ''* 『Read』モード
+                                                                                                  FileOpen(Lng_File_No, Str_File_Name, OpenMode.Input, OpenAccess.Read)
+                                                                                    Case 2 ''* 『Write』モード
+                                                                                                  'UPGRADE_WARNING: オブジェクト Ret の既定プロパティを解決できませんでした。 詳細については、'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"' をクリックしてください。
+                                                                                                  Ret = MsgBox("指定されたモードは矛盾が有ります。" & vbCrLf & vbCrLf & "Int_File_Mode=" & Int_File_Mode & vbCrLf & "Int_Access_Mode=" & Int_Access_Mode, MsgBoxStyle.OKOnly)
+                                                                                                  ''                      Open Str_File_Name For Input Access Write As #Lng_File_No
+                                                                                    Case 3 ''* 『Read Write』モード
+                                                                                                  'UPGRADE_WARNING: オブジェクト Ret の既定プロパティを解決できませんでした。 詳細については、'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"' をクリックしてください。
+                                                                                                  Ret = MsgBox("指定されたモードは矛盾が有ります。" & vbCrLf & vbCrLf & "Int_File_Mode=" & Int_File_Mode & vbCrLf & "Int_Access_Mode=" & Int_Access_Mode, MsgBoxStyle.OKOnly)
+                                                                                                  ''                      Open Str_File_Name For Input Access Read Write As #Lng_File_No
+                                                                                    Case Else ''* 指定無し
+                                                                                                  FileOpen(Lng_File_No, Str_File_Name, OpenMode.Input)
+                                                                      End Select
+                                                        Else
+                                                                      ''* レコード長指定・有り
+                                                                      
+                                                                      ''* アクセス・モード
+                                                                      Select Case Int_Access_Mode
+                                                                                    Case 1 ''* 『Read』モード
+                                                                                                  FileOpen(Lng_File_No, Str_File_Name, OpenMode.Input, OpenAccess.Read, , Lng_Length)
+                                                                                    Case 2 ''* 『Write』モード
+                                                                                                  'UPGRADE_WARNING: オブジェクト Ret の既定プロパティを解決できませんでした。 詳細については、'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"' をクリックしてください。
+                                                                                                  Ret = MsgBox("指定されたモードは矛盾が有ります。" & vbCrLf & vbCrLf & "Int_File_Mode=" & Int_File_Mode & vbCrLf & "Int_Access_Mode=" & Int_Access_Mode, MsgBoxStyle.OKOnly)
+                                                                                                  ''                      Open Str_File_Name For Input Access Write As #Lng_File_No Len = Lng_Length
+                                                                                    Case 3 ''* 『Read Write』モード
+                                                                                                  'UPGRADE_WARNING: オブジェクト Ret の既定プロパティを解決できませんでした。 詳細については、'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"' をクリックしてください。
+                                                                                                  Ret = MsgBox("指定されたモードは矛盾が有ります。" & vbCrLf & vbCrLf & "Int_File_Mode=" & Int_File_Mode & vbCrLf & "Int_Access_Mode=" & Int_Access_Mode, MsgBoxStyle.OKOnly)
+                                                                                                  ''                      Open Str_File_Name For Input Access Read Write As #Lng_File_No Len = Lng_Length
+                                                                                    Case Else ''* 指定無し
+                                                                                                  FileOpen(Lng_File_No, Str_File_Name, OpenMode.Input, , , Lng_Length)
+                                                                      End Select
+                                                        End If
+                                          Case 4 ''* 『Output』モード
+                                                        If Lng_Length = -1 Then
+                                                                      ''* レコード長指定・無し
+                                                                      
+                                                                      ''* アクセス・モード
+                                                                      Select Case Int_Access_Mode
+                                                                                    Case 1 ''* 『Read』モード
+                                                                                                  'UPGRADE_WARNING: オブジェクト Ret の既定プロパティを解決できませんでした。 詳細については、'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"' をクリックしてください。
+                                                                                                  Ret = MsgBox("指定されたモードは矛盾が有ります。" & vbCrLf & vbCrLf & "Int_File_Mode=" & Int_File_Mode & vbCrLf & "Int_Access_Mode=" & Int_Access_Mode, MsgBoxStyle.OKOnly)
+                                                                                                  ''                      Open Str_File_Name For Output Access Read As #Lng_File_No
+                                                                                    Case 2 ''* 『Write』モード
+                                                                                                  FileOpen(Lng_File_No, Str_File_Name, OpenMode.Output, OpenAccess.Write)
+                                                                                    Case 3 ''* 『Read Write』モード
+                                                                                                  'UPGRADE_WARNING: オブジェクト Ret の既定プロパティを解決できませんでした。 詳細については、'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"' をクリックしてください。
+                                                                                                  Ret = MsgBox("指定されたモードは矛盾が有ります。" & vbCrLf & vbCrLf & "Int_File_Mode=" & Int_File_Mode & vbCrLf & "Int_Access_Mode=" & Int_Access_Mode, MsgBoxStyle.OKOnly)
+                                                                                                  ''                      Open Str_File_Name For Output Access Read Write As #Lng_File_No
+                                                                                    Case Else ''* 指定無し
+                                                                                                  FileOpen(Lng_File_No, Str_File_Name, OpenMode.Output)
+                                                                      End Select
+                                                        Else
+                                                                      ''* レコード長指定・有り
+                                                                      
+                                                                      ''* アクセス・モード
+                                                                      Select Case Int_Access_Mode
+                                                                                    Case 1 ''* 『Read』モード
+                                                                                                  'UPGRADE_WARNING: オブジェクト Ret の既定プロパティを解決できませんでした。 詳細については、'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"' をクリックしてください。
+                                                                                                  Ret = MsgBox("指定されたモードは矛盾が有ります。" & vbCrLf & vbCrLf & "Int_File_Mode=" & Int_File_Mode & vbCrLf & "Int_Access_Mode=" & Int_Access_Mode, MsgBoxStyle.OKOnly)
+                                                                                                  ''                      Open Str_File_Name For Output Access Read As #Lng_File_No Len = Lng_Length
+                                                                                    Case 2 ''* 『Write』モード
+                                                                                                  FileOpen(Lng_File_No, Str_File_Name, OpenMode.Output, OpenAccess.Write, , Lng_Length)
+                                                                                    Case 3 ''* 『Read Write』モード
+                                                                                                  'UPGRADE_WARNING: オブジェクト Ret の既定プロパティを解決できませんでした。 詳細については、'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"' をクリックしてください。
+                                                                                                  Ret = MsgBox("指定されたモードは矛盾が有ります。" & vbCrLf & vbCrLf & "Int_File_Mode=" & Int_File_Mode & vbCrLf & "Int_Access_Mode=" & Int_Access_Mode, MsgBoxStyle.OKOnly)
+                                                                                                  ''                      Open Str_File_Name For Output Access Read Write As #Lng_File_No Len = Lng_Length
+                                                                                    Case Else ''* 指定無し
+                                                                                                  FileOpen(Lng_File_No, Str_File_Name, OpenMode.Output, , , Lng_Length)
+                                                                      End Select
+                                                        End If
+                                          Case Else
+                            End Select
+                            
+                            Fnc_File_Open = True
+                            
+Exit_Fnc_File_Open: 
+                            
+                            ''  ''* 終了・メッセージ
+                            ''  Ret = Fnc_Debug_LOG(Str_ModuleID, 87, "End")
+                            
+                            On Error GoTo 0
+                            
+                            Exit Function
+                            
+Err_Fnc_File_Open: 
+                            
+                            ''* エラー・ログ出力
+                            ''  Ret = Fnc_Err(Err, Str_ModuleID)
+                            
+                            GoTo Exit_Fnc_File_Open
+                            
+              End Function
+              
+              Public Function Fnc_ResFile_Open(ByRef Lng_File_No As Integer, Optional ByVal Str_Response_File_Name As String = Con_Res_FileName) As Short
+                      ''************************************************************************************************
+                            ''*                                                                                             *
+                            ''* Fnc_ResFile_Open                                                                            *
+                            ''*                                                                                             *
+                      ''************************************************************************************************
+                            ''*                                                                                             *
+                            ''* Detail  :   レスポンス・ファイルのオープン処理                                              *
+                            ''*                                                                                             *
+                            ''*----------------------------------------------------------------------------------------------*
+                            ''*                                                                                             *
+                            ''* Param   :       Non                                                                      *
+                            ''*                                                                                             *
+                            ''*----------------------------------------------------------------------------------------------*
+                            ''*                                                                                             *
+                            ''* Return  :       Non                                                                      *
+                            ''*                                                                                             *
+                      ''************************************************************************************************
+                            
+                            Dim Str_ModuleID As String ''* モジュールＩＤ
+                            
+                            On Error GoTo Err_Fnc_ResFile_Open
+                            
+                            Fnc_ResFile_Open = False
+                            
+                            ''* モジュールＩＤ登録
+                            Str_ModuleID = "Fnc_ResFile_Open"
+                            
+                            ''* 開始・メッセージ
+                            'UPGRADE_WARNING: オブジェクト Ret の既定プロパティを解決できませんでした。 詳細については、'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"' をクリックしてください。
+                            Ret = Fnc_Debug_LOG(Str_ModuleID, 86, "Start")
+                            
+                            ''* レスポンスファイルを書き込みモードで生成
+                            Fnc_ResFile_Open = Fnc_File_Open(Lng_File_No, Str_Response_File_Name, 4)
+                            
+Exit_Fnc_ResFile_Open: 
+                            
+                            ''* 終了・メッセージ
+                            'UPGRADE_WARNING: オブジェクト Ret の既定プロパティを解決できませんでした。 詳細については、'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"' をクリックしてください。
+                            Ret = Fnc_Debug_LOG(Str_ModuleID, 87, "End")
+                            
+                            On Error GoTo 0
+                            
+                            Exit Function
+                            
+Err_Fnc_ResFile_Open: 
+                            
+                            ''* エラー・ログ出力
+                            'UPGRADE_WARNING: オブジェクト Ret の既定プロパティを解決できませんでした。 詳細については、'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"' をクリックしてください。
+                            Ret = Fnc_Err(Err, Str_ModuleID)
+                            
+                            GoTo Exit_Fnc_ResFile_Open
+                            
+              End Function
+              
+              Public Function Fnc_LogFile_Open(ByRef Lng_File_No As Integer, Optional ByRef Str_LogFileName As String = "") As Short
+                      ''************************************************************************************************
+                            ''*                                                                                             *
+                            ''* Fnc_LogFile_Open                                                                            *
+                            ''*                                                                                             *
+                      ''************************************************************************************************
+                            ''*                                                                                             *
+                            ''* Detail  :   ログ・ファイル・オープン処理                                                    *
+                            ''*                                                                                             *
+                            ''*----------------------------------------------------------------------------------------------*
+                            ''*                                                                                             *
+                            ''* Param   :       Non                                                                      *
+                            ''*                                                                                             *
+                            ''*----------------------------------------------------------------------------------------------*
+                            ''*                                                                                             *
+                            ''* Return  :       Non                                                                      *
+                            ''*                                                                                             *
+                      ''************************************************************************************************
+                            
+                            Dim Str_ModuleID As String ''* モジュールＩＤ
+                            Dim Str_WK_Log_FileName As String
+                            
+                            ''* モジュールＩＤ登録
+                            Str_ModuleID = "Fnc_LogFile_Open"
+                            
+                            On Error GoTo Err_Fnc_LogFile_Open
+                            
+                            Fnc_LogFile_Open = False
+                            
+                            ''  ''* 開始・メッセージ
+                            ''  Ret = Fnc_Debug_LOG(Str_ModuleID, 86, "Start")
+                            
+                            Str_WK_Log_FileName = ""
+                            Str_WK_Log_FileName = Fnc_Dir_Name_CHK(Str_WK_Log_FileName & Fnc_Get_Cur_Dir())
+                            
+                            If Trim(Ini_Str_System_Log_Dir) = "" Then
+                                          Str_WK_Log_FileName = Fnc_Dir_Name_CHK(Str_WK_Log_FileName & Con_Log_Def_Dir)
+                            Else
+                                          Str_WK_Log_FileName = Fnc_Dir_Name_CHK(Str_WK_Log_FileName & Ini_Str_System_Log_Dir)
+                            End If
+                            
+                            Str_WK_Log_FileName = Str_WK_Log_FileName & Str_LogFileName
+                            
+                            ''* ログ・ファイルを書き込みモードで生成
+                            Fnc_LogFile_Open = Fnc_File_Open(Lng_File_No, Str_WK_Log_FileName, 1)
+                            
+Exit_Fnc_LogFile_Open: 
+                            
+                            ''  ''* 終了・メッセージ
+                            ''  Ret = Fnc_Debug_LOG(Str_ModuleID, 87, "End")
+                            
+                            On Error GoTo 0
+                            
+                            Exit Function
+                            
+Err_Fnc_LogFile_Open: 
+                            
+                            ''* エラー・ログ出力
+                            ''  Ret = Fnc_Err(Err, Str_ModuleID)
+                            
+                            GoTo Exit_Fnc_LogFile_Open
+                            
+              End Function
+              
+              Public Function Fnc_File_Close(ByRef Lng_File_No As Integer) As Short
+                      ''************************************************************************************************
+                            ''*                                                                                             *
+                            ''* Fnc_File_Close                                                                              *
+                            ''*                                                                                             *
+                      ''************************************************************************************************
+                            ''*                                                                                             *
+                            ''* Detail  :   ファイル・クロース処理                                                          *
+                            ''*                                                                                             *
+                            ''*----------------------------------------------------------------------------------------------*
+                            ''*                                                                                             *
+                            ''* Param   :       Non                                                                      *
+                            ''*                                                                                             *
+                            ''*----------------------------------------------------------------------------------------------*
+                            ''*                                                                                             *
+                            ''* Return  :       Non                                                                      *
+                            ''*                                                                                             *
+                      ''************************************************************************************************
+                            Dim Str_ModuleID As String ''* モジュールＩＤ
+                            
+                            ''* モジュールＩＤ登録
+                            Str_ModuleID = "Fnc_Split"
+                            
+                            On Error GoTo Err_Fnc_File_Close
+                            
+                            Fnc_File_Close = False
+                            
+                            ''  ''* 開始・メッセージ
+                            ''  Ret = Fnc_Debug_LOG(Str_ModuleID, 86, "Start")
+                            
+                            FileClose(Lng_File_No)
+                            
+                            Fnc_File_Close = True
+                            
+Exit_Fnc_File_Close: 
+                            
+                            ''  ''* 終了・メッセージ
+                            ''  Ret = Fnc_Debug_LOG(Str_ModuleID, 87, "End")
+                            
+                            On Error GoTo 0
+                            
+                            Exit Function
+                            
+Err_Fnc_File_Close: 
+                            
+                            ''* エラー・ログ出力
+                            'UPGRADE_WARNING: オブジェクト Ret の既定プロパティを解決できませんでした。 詳細については、'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"' をクリックしてください。
+                            Ret = Fnc_Err(Err, Str_ModuleID)
+                            
+                            GoTo Exit_Fnc_File_Close
+                            
+              End Function

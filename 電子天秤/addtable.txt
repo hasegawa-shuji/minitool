@@ -1,0 +1,48 @@
+Public Sub cmd_入庫処理_Click()
+
+ '重量値が入力されていないと処理中止
+ If Me.text1 = "" Or IsNull(Me.text1) Then    'Nullか未入力かどちらかで処理中止
+     MsgBox "重量値が設定されていません。"
+     Exit Sub
+ 
+ '単位が入力されていないと処理中止
+ ElseIf Me.text2 = "" Or IsNull(Me.text2) Then
+     MsgBox "単位情報が設定されていません。"
+     Exit Sub
+ End If
+
+'以下のソースコードを追記する。
+ Dim cn As New ADODB.Connection
+ Dim rs As New ADODB.Recordset
+ 
+ 'カレントデータベースへの接続
+ Set cn = CurrentProject.Connection
+
+ 'T_Weightテーブルを開く
+ rs.Open "T_Weight", cn, adOpenKeyset, adLockOptimistic
+
+ 'レコードセットの登録（フィールド指定は、rs!～と記載する。）
+ rs.AddNew
+ rs!C_Weight = Me.text1　　'rs!～：　対象テーブルのフィールド名を指定する。
+ rs!C_Unit = Me.text2
+ rs!C_Date = Now()
+ 
+ 
+ 'Updateで情報登録が完了する。
+ rs.Update
+
+ 'テーブルを閉じる。
+ rs.Close
+
+
+
+ 'データベース接続を閉じる。
+ cn.Close
+
+ 'ガーベージコレクション
+ Set rs = Nothing
+ Set cn = Nothing
+
+ MsgBox "処理を完了しました。"
+
+ End Sub

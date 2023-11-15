@@ -1,0 +1,8 @@
+SELECT T_differential.[ステータス], T_differential.社員No, T_differential.氏名, T_differential.所属No, T_differential.所属名,
+ T_differential.出勤日数, T_differential.欠勤日数, T_differential.有休日数,
+ T_differential.特休日数_有給, T_differential.特休日数_無給, T_differential.代休日数, T_differential.出勤時間,
+ T_differential.遅刻早退時間, T_differential.普通残業時間, T_differential.深夜残業時間, T_differential.所定内残業時間,
+ T_differential.法外休日出勤時間, T_differential.法外休日深夜時間, T_differential.法定休日時間, T_differential.法定休日深夜時間,
+ T_differential.H45h超過残業, T_differential.H60h超過残業, T_differential.深夜所定時間25, T_differential.法定割増時間35, T_differential.宿日直回数
+FROM T_differential LEFT JOIN T_attendC ON T_differential.[社員No] = T_attendC.[社員No]
+WHERE (((T_attendC.社員No) Is Null));

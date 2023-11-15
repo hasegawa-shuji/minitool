@@ -1,0 +1,109 @@
+Public Function GSET_DBSET_ISSUE2_New(Str_SQL As string) As String  '登録処理
+' ************************************************************************************************
+' ***
+' ***   ◆DB登録処理
+' ***
+' ***   ◇概要　：個別現品票(ロット払出DB登録処理)
+' ***           ：
+' ***     戻り値：1:OK
+' ***
+' ************************************************************************************************
+'------------------------------------------------------------------------------------------
+On Error GoTo Err_Handler
+'------------------------------------------------------------------------------------------
+    '*******************************************************************************************
+    '*** Db 登録処理
+    '*******************************************************************************************
+    ''2023/03/24 Add Start
+    Dim Ret As Variant
+    'Dim Str_SQL As String
+    
+    ''データ追加用SQL作成
+    Str_SQL = ""
+    Str_SQL = Str_SQL & "INSERT INTO EXPJ.T_LOT_ISSUE_AC "
+    Str_SQL = Str_SQL & "( "
+    Str_SQL = Str_SQL & "    TOU_KANRI_NO"          '-- 投入管理番号
+    Str_SQL = Str_SQL & "    ,    PLANT_CD"         '-- 工場コード
+    Str_SQL = Str_SQL & "    ,    TOU_LOT_NO"       '-- 投入ロット№
+    Str_SQL = Str_SQL & "    ,    DOLLY_NO"         '-- 投入台車№
+    Str_SQL = Str_SQL & "    ,    ITEM_CD"          '-- 品目番号
+    Str_SQL = Str_SQL & "    ,    OUT_YDATE"        '-- 予定日付
+    Str_SQL = Str_SQL & "    ,    OUT_YTIME"        '-- 予定時間
+    Str_SQL = Str_SQL & "    ,    OUT_YSURYO"       '-- 予定数量
+    Str_SQL = Str_SQL & "    ,    TOU_DATE"         '-- 投入日
+    Str_SQL = Str_SQL & "    ,    TOU_TIME"         '-- 投入時間
+    Str_SQL = Str_SQL & "    ,    TOU_SURYO"        '-- 投入数
+    Str_SQL = Str_SQL & "    ,    CMPLT_DATE"       '-- 完了日
+    Str_SQL = Str_SQL & "    ,    CMPLT_KBN"        '-- 完了区分
+    Str_SQL = Str_SQL & "    ,    KANRI_NO"         '-- 管理番号
+    Str_SQL = Str_SQL & "    ,    USER_CD"          '-- 作業者コード
+    Str_SQL = Str_SQL & "    ,    PARENT_ITEM_CD"   '-- 親品番
+    Str_SQL = Str_SQL & "    ,    WORK_ODR_CD"      '-- 作業計画番号
+    Str_SQL = Str_SQL & "    ,    REMARKS1"         '-- 備考1
+    Str_SQL = Str_SQL & "    ,    REMARKS2"         '-- 備考2
+    Str_SQL = Str_SQL & "    ,    REMARKS3"         '-- 備考3
+    Str_SQL = Str_SQL & "    ,    CREATED_DATE"     '-- 作成日
+    Str_SQL = Str_SQL & "    ,    CREATED_BY"       '-- 作成者
+    Str_SQL = Str_SQL & "    ,    CREATED_PRG_NM"   '-- 作成プログラム名
+    Str_SQL = Str_SQL & "    ,    UPDATED_DATE"     '-- 更新日
+    Str_SQL = Str_SQL & "    ,    UPDATED_BY"       '-- 更新者
+    Str_SQL = Str_SQL & "    ,    UPDATED_PRG_NM"   '-- 更新プログラム名
+    Str_SQL = Str_SQL & "    ,    MODIFY_COUNT"     '-- 更新数
+    Str_SQL = Str_SQL & ") "
+    Str_SQL = Str_SQL & "VALUES ( "
+    Str_SQL = Str_SQL & "    '" & DENP_NO & "'"                                     '-- 投入管理番号        (TOU_KANRI_NO)
+    Str_SQL = Str_SQL & "    ,    '" & PLANT_CD & "'"                               '-- 工場コード          (PLANT_CD)
+    Str_SQL = Str_SQL & "    ,    '" & GAMEN.G_DLOT_NO & "'"                        '-- 投入ロット№        (TOU_LOT_NO)
+    Str_SQL = Str_SQL & "    ,    '" & Format(GAMEN.G_LABEL_KEN, "00000") & "'"     '-- 投入台車№          (DOLLY_NO)"
+    Str_SQL = Str_SQL & "    ,    '" & GAMEN.G_ITEM_CD & "'"                        '-- 品目番号            (ITEM_CD)
+    Str_SQL = Str_SQL & "    ,    sysdate "                                         '-- 予定日付            (OUT_YDATE)
+    Str_SQL = Str_SQL & "    ,    sysdate "                                         '-- 予定時間            (OUT_YTIME)
+    Str_SQL = Str_SQL & "    ,    " & GAMEN.G_RSLT_QTY                              '-- 予定数量            (OUT_YSURYO)
+    Str_SQL = Str_SQL & "    ,    sysdate "                                         '-- 投入日              (TOU_DATE)
+    Str_SQL = Str_SQL & "    ,    sysdate "                                         '-- 投入時間            (TOU_TIME)
+    Str_SQL = Str_SQL & "    ,    0"                                                '-- 投入数              (TOU_SURYO)
+    Str_SQL = Str_SQL & "    ,    sysdate "                                         '-- 完了日              (CMPLT_DATE)
+    Str_SQL = Str_SQL & "    ,    '1'"                                              '-- 完了区分            (CMPLT_KBN)
+    Str_SQL = Str_SQL & "    ,    NULL"                                             '-- 管理番号            (KANRI_NO)
+    Str_SQL = Str_SQL & "    ,    '" & GAMEN.G_USER_CD & "'"                        '-- 作業者コード        (USER_CD)
+    Str_SQL = Str_SQL & "    ,    '" & GAMEN.G_ITEM_CD & "'"                        '-- 親品番              (PARENT_ITEM_CD)
+    Str_SQL = Str_SQL & "    ,    '" & GAMEN.G_WORK_ODR_CD & "'"                    '-- 作業計画番号        (WORK_ODR_CD)
+    Str_SQL = Str_SQL & "    ,    '" & GAMEN.G_OUT_LOT_NO & "'"                     '-- 備考1               (REMARKS1)
+    Str_SQL = Str_SQL & "    ,    '" & GAMEN.G_WEIGHT & "'"                         '-- 備考2               (REMARKS2)
+    Str_SQL = Str_SQL & "    ,    '" & GAMEN.G_DRAW_CD & "'"                        '-- 備考3               (REMARKS3)
+    Str_SQL = Str_SQL & "    ,    sysdate "                                         '-- 作成日              (CREATED_DATE)
+    Str_SQL = Str_SQL & "    ,    '" & GAMEN.G_USER_CD & "'"                        '-- 作成者              (CREATED_BY)
+    Str_SQL = Str_SQL & "    ,    'GENP_020'"                                       '-- 作成プログラム名    (CREATED_PRG_NM)
+    Str_SQL = Str_SQL & "    ,    sysdate "                                         '-- 更新日              (UPDATED_DATE)
+    Str_SQL = Str_SQL & "    ,    '" & GAMEN.G_USER_CD & "'"                        '-- 更新者              (UPDATED_BY)
+    Str_SQL = Str_SQL & "    ,    'GENP_020'"                                       '-- 更新プログラム名    (UPDATED_PRG_NM)
+    Str_SQL = Str_SQL & "    ,    1"                                                '-- 更新数              (MODIFY_COUNT)
+    Str_SQL = Str_SQL & ") "
+
+    ''ワーニングOff
+    DoCmd.SetWarnings False
+
+    ''念の為、他処理実行
+    DoEvents
+    
+    ''SQL実行
+    Ret = Fnc_SQL_EXEC(Str_SQL)
+
+    ''念の為、他処理実行
+    DoEvents
+
+    ''ワーニングOn（元に戻す）
+    DoCmd.SetWarnings True
+    ''2023/03/24 Add End
+
+    GSET_DBSET_ISSUE2 = "OK"
+    Exit Function
+    
+Err_Handler:
+    '--------------------------------------------------------------------------------------
+    ' ◆例外処理：エラー処理
+    '--------------------------------------------------------------------------------------
+    MsgBox Error$ 'エラーメッセージ表示
+    
+End Function
+

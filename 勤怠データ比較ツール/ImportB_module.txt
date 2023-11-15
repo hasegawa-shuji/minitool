@@ -1,0 +1,89 @@
+Public Function ImportB(ByRef Dt_Created_B As Date, ByRef Str_FilePath_B As String, _
+                        ByRef Str_FileName_B As String) As Boolean
+
+'**********************************************************************************
+'
+'    目的：ファイルB（後）をインポートする
+'
+'
+'            戻り値   True: 正常終了   False: 異常
+'
+'
+'            引数   Dt_Created_B：ファイル作成日   Str_FilePath_B：ファイルパス
+'
+'                   Str_FileName_B：ファイル名
+'
+'
+'    作成者：長谷川宗司
+'
+'************************************************************************************
+
+
+  Dim Str_FilePath As String
+  Dim Str_FileName As String
+  'Dim Str_FilePath_B As String
+  'Dim Str_FileName_B As String
+  Dim Boo_IB_Ret As Boolean
+  Dim msg As Variant
+  Dim Str_Imp As String
+  Dim Str_Tbl As String
+  Dim Boo_FS_Ret As Boolean
+  Dim Boo_GDFC_Ret As Boolean
+  Dim Boo_IT_Ret As Boolean
+  Dim Boo_DTD_Ret As Boolean
+  Dim Dt_Created As Date
+  'Dim Dt_Created_B As Date
+
+
+
+  On Error GoTo ERR1
+  
+  Boo_IB_Ret = False
+  
+  
+  
+     Boo_FS_Ret = FileSelect(Str_FilePath, Str_FileName)  'ファイルを選択
+     
+          
+         Str_FilePath_B = Str_FilePath  'ファイルパスをＡ専用変数に代入
+         Str_FileName_B = Str_FileName  'ファイル名をＡ専用変数に代入
+         
+        Form_F_Control.Txt_Input_Dir_A.Value = Str_FilePath_B  'テキストボックスにフルパスを代入
+        Form_F_Control.Txt_Input_File_A.Value = Str_FileName_B 'テキストボックスにファイル名を代入
+        
+    
+    
+    
+    
+        Str_Tbl = "T_attendB"  'テーブル名を代入
+    
+     Boo_DTD_Ret = DeleteTblData(Str_Tbl) 'テーブルデータを削除（初期化）
+     
+
+        Str_Imp = "ImpB"        'テーブル定義名を代入
+    
+     Boo_IT_Ret = ImportTable(Str_Imp, Str_Tbl, Str_FilePath) 'テーブルにデータを書き込む
+     
+     
+     
+     Boo_GDFC_Ret = GetDateFileCreated(Dt_Created, Str_FilePath) 'データ作成日を取得
+     
+        Dt_Created_B = Dt_Created 'データ作成日をA専用変数に代入
+        
+        Form_F_Control.Txt_CreateDate_A.Value = Dt_Created_B 'テキストボックスに選択ファイルの作成日時を代入
+        
+        
+ 
+
+   Boo_IB_Ret = True
+
+Exit Function
+
+ERR1:
+   msg = "エラー発生アプリ: " & Err.Source & vbCrLf & _
+            "エラー番号: " & Err.Number & vbCrLf & _
+            "エラー内容: " & Err.Description & vbCrLf
+   
+   MsgBox "ERR1" & vbCrLf & msg
+
+End Function

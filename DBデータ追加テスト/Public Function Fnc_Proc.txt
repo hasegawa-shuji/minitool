@@ -1,0 +1,73 @@
+Public Function Fnc_Proc(byval Obj_Form As object, byval Int_Proc_Mode As Integer) As Integer
+
+    Dim Str_SQL As String
+    Dim Obj_ADODB_Con As ADODB.Connection
+    Dim Obj_ADODB_Rs As ADODB.Recordset
+    Dim Dt_StartTime As Date
+    Dim Dt_EndTime As Date
+
+
+    ''開始時刻取得
+    Dt_StartTime = now()
+    
+ 
+    ''DBオープン  
+    Ret = Fnc_SQL_Open(Obj_ADODB_Con, Obj_ADODB_Rs)
+    
+    
+    ''メイン処理
+    Ret = Fnc_SQL_Exec(Str_SQL, Obj_ADODB_Con, Obj_ADODB_Rs)
+
+     ''ループ開始処理
+    
+      Dim i as integer
+      Dim cnt as integer 
+      Dim zeroume as string
+      Dim str_sn as string
+      Dim Button_Name As String
+      
+      cnt =  Form_F_Test.Txt_Loop.value
+      zeroume = "000000000"
+
+      
+      for i = 1 to cnt
+          
+        str_sn = "CT" & format(i, zeroume)
+        
+        '押されたボタンを判定
+        'Button_Name = Application.Caller
+ 
+        'If Button_Name = "Cmd_Proc11" Then
+        If Int_Proc_Mode = 11
+ 
+          MsgBox "Cmd_Proc11が押されました。"
+
+          Call GSET_DBSET_ISSUE2_Old(str_sn)
+          
+ 
+          'ElseIf Button_Name = "Cmd_Proc12" Then
+          ElseIf int_Proc_Mode = 12
+    
+          MsgBox "Cmd_Proc12が押されました。"
+          
+          Call GSET_DBSET_ISSUE2_New(str_sn)
+          
+        End If          
+
+     ''ループ終了処理
+       next i
+    
+    
+    ''DBクローズ
+    Fnc_SQL_Close(Obj_ADODB_Con, Obj_ADODB_Rs)
+    
+
+    
+    ''終了時刻取得
+    Dt_EndTime = now()
+    
+    Dt_SpendTime = Dt_EndTime - Dt_StartTime
+    MsgBox "経過時間：" & Dt_SpendTime
+    
+
+End Function

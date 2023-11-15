@@ -1,0 +1,30 @@
+
+public function T_DeleteTime_Del() as variant
+
+
+dim Obj_CN as New ADODB.Connection
+dim Obj_RS as New ADODB.Recordset
+dim Str_SQL as string
+
+  set Obj_CN = currentproject.connection
+ 
+  Str_SQL = ""
+  Str_SQL = "DELETE * FROM T_DeleteTime"
+  
+  
+  
+  Obj_RS.Open Str_SQL, Obj_CN, adOpenKeyset, adLockOpimistic
+
+
+  Obj_RS.close: set Obj_RS = Nothing 
+
+end function
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,138 @@
+ Public Function Fnc_HeaderPlusRecord_2(ByRef rs As ADODB.Recordset, ByRef cn As ADODB.Connection,byval Str_FilenameCAE as string) As Boolean
+'**********************************************************************************
+'
+'    目的：ヘッダーとレコードを合体させCSV出力する
+'
+'
+'           戻り値   True：  正常終了
+'                    False:  異常
+'
+'            引数   rs：ADOレコードセット
+'                   cn：ADO接続用
+'
+'    作成者：長谷川宗司
+'
+'************************************************************************************
+
+
+
+ On Error GoTo ERR8
+ 
+ 
+ Fnc_HeaderPlusRecord2 = False
+ 
+
+ 
+           '---------------ヘッダー行を格納する処理---------------
+        '列数分ループ
+ 
+        Dim Header As String
+        Dim RsCol As Long
+        
+        For RsCol = 0 To rs.Fields.Count - 1
+        Header = Header & rs.Fields(RsCol).Name & ","
+        Next RsCol
+        
+            '行の最後に着いたカンマorタブを削除
+        Header = Left(Header, Len(Header) - 1)
+        
+           
+        'データがない場合はDataRecords変数に""を代入してファイル出力処理にジャンプ
+        Dim DataRecords As String
+        If rs.EOF Then
+         MsgBox "差異はありません"
+         DataRecords = ""
+         GoTo FILEOUTPUT
+        Else
+         MsgBox "差異が出ました"
+          'Rs.RecordCount取得用処理
+         rs.MoveLast
+         rs.MoveFirst
+        End If
+        
+          
+          '---------------データ行を格納する処理---------------
+        Dim loopcount As Long
+        'Dim DataRecords As String
+        
+    ' 先頭レコードからEOFまで繰り返す
+    Do Until rs.EOF
+        
+        loopcount = loopcount + 1
+            
+        '列数分ループ
+        For RsCol = 0 To rs.Fields.Count - 1
+            DataRecords = DataRecords & rs.Fields(RsCol).Value & ","
+        Next RsCol
+        
+        '行の最後に着いたカンマorタブを削除
+        DataRecords = Left(DataRecords, Len(DataRecords) - 1)
+        
+        '最終行の時は改行しない、それ以外は改行する
+        If rs.RecordCount <> loopcount Then
+            'データ行を改行
+            DataRecords = DataRecords & Chr(13) & Chr(10)
+        End If
+        
+        '次のレコードへ
+        rs.MoveNext
+    Loop
+        
+        '最初のレコードへ（初期化）
+        rs.MoveFirst
+        
+        
+        
+          '---------------ファイル書き込み準備処理---------------
+       Dim Str_InitialFileName As String
+       Dim FileFullPath As String
+       Dim Boo_FS_Ret As Boolean
+           
+           
+               'クラスモジュール呼び出し
+          Dim cCP As cls_CommonProcess
+          Set cCP = New cls_CommonProcess
+    
+           '初期ファイル名を設定
+          Str_InitialFileName = Str_FilenameCAE & Format(Now, "yyyymmddhhnnss") & ".csv"
+          
+           'ファイル保存ダイアログ
+          Boo_FS_Ret = cCP.Fnc_FileSave(Str_InitialFileName, FileFullPath) 'モジュール呼び出し
+ 
+           'ファイルが選択されていなければ処理を抜ける
+           If FileFullPath = "" Then
+             Exit Function
+           End If    
+           
+              
+            
+           '---------------ファイルに出力---------------
+
+           
+    If FileFullPath <> "" Then
+      Open FileFullPath For Output As #1
+        Print #1, Header & Chr(13) & Chr(10) & DataRecords
+      Close #1
+
+    End If
+
+FILEOUTPUT:
+   
+   
+   
+   Set cCP = Nothing
+ 
+  Fnc_HeaderPlusRecord2 = True
+        
+ Exit Function
+
+ERR8:
+   msg = "エラー発生アプリ: " & Err.Source & vbCrLf & _
+            "エラー番号: " & Err.Number & vbCrLf & _
+            "エラー内容: " & Err.Description & vbCrLf
+   
+   MsgBox "ERR8" & vbCrLf & msg
+          
+   Set cCP = Nothing
+          
+End Function

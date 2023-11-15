@@ -1,0 +1,33 @@
+
+public function SaveFileName() as boolean
+
+Dim dlgSA As FileDialog
+Dim varFile As Variant
+
+Set dlgSA = Application.FileDialog(msoFileDialogSaveAs)
+
+    'ダイアログ表示
+    dlgSA.Show
+    
+    '出力
+    For Each varFile In dlgSA.SelectedItems
+        If Right(varFile, 4) = ".xls" Then
+        
+            DoCmd.TransferSpreadsheet acExport, acSpreadsheetTypeExcel12Xml, "Q_result", varFile, True
+            
+        ElseIf Right(varFile, 4) = ".csv" Then
+        
+            DoCmd.TransferText acExportDelim, , "Q_result", varFile, True
+            
+        Else
+        
+            MsgBox "Excel形式か、CSV形式にしか出力できません。", vbOKOnly', cSysName
+            Set dlgSA = Nothing
+            Exit Sub
+            
+        End If
+    Next
+    Set dlgSA = Nothing
+  
+end function  
+ 

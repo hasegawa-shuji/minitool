@@ -1,0 +1,49 @@
+Public Function T_LOT_ISSUE_AC_Del() As Variant
+' ************************************************************************************************
+' ***
+' ***   ◆テーブル削除処理
+' ***
+' ***   ◇概要　：
+' ***           ：
+' ***     戻り値：
+' ***
+' ************************************************************************************************
+'------------------------------------------------------------------------------------------
+On Error GoTo Err_Handler
+'------------------------------------------------------------------------------------------
+
+dim Obj_CN as New ADODB.connection
+dim Obj_RS as New ADODB.recordset
+dim Str_PCName as string
+dim Str_SQL as string
+
+set Obj_CN = currentproject.connection
+
+
+ Str_PCName = Form_F_Test.Txt_PCName.Value
+
+
+ Str_SQL = ""
+ Str_SQL = "SELECT * FROM T_LOT_ISSUE_AC WHERE (TOU_KANRI_NO = '" & Str_PCName & "');"
+
+ Obj_RS.Open Str_SQL, Obj_CN, adOpenDynamic, adLockOptimistic
+
+    Do Until Obj_RS.EOF
+        Obj_RS.Delete
+        Obj_RS.MoveNext
+    Loop
+
+
+
+    Exit Function
+
+
+
+    
+Err_Handler:
+    '--------------------------------------------------------------------------------------
+    ' ◆例外処理：エラー処理
+    '--------------------------------------------------------------------------------------
+    MsgBox Error$ 'エラーメッセージ表示
+    
+End Function

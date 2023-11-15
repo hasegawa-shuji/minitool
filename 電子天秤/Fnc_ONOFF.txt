@@ -1,0 +1,54 @@
+
+
+Public Function Fnc_DirectiveOrders(ByVal iAscii As String, Optional ByVal ComPortNum As String = "COM6") As Boolean
+'**************************************************
+'
+' 目的 計量デバイスへの指示
+'
+'
+' 引数  ComPortNum ：COMポート番号 初期値"COM6"
+'
+'       iAscii : 指示コマンド
+'
+'
+' 戻り値   Boo_FDO
+'
+'
+'**************************************************
+
+
+Dim Fnc_FDO As Boolean
+Dim Boo_PO As Boolean
+
+Fnc_FDO = False
+
+On Error GoTo ERR1
+
+
+
+    'COMポートを開く
+    'バッファクリア
+    '文字列送信
+    Boo_PO = PortOpen(ComPortNum, iAscii)
+
+
+
+
+
+
+Fnc_FDO = True
+
+
+Exit Function
+
+ERR1:
+    msg = "エラー発生アプリ: " & Err.Source & vbCrLf & _
+            "エラー番号: " & Err.Number & vbCrLf & _
+            "エラー内容: " & Err.Description & vbCrLf
+   
+   MsgBox "ERR1" & vbCrLf & msg
+   Call PortClose
+   Call Fnc_CmdBtn_Enable
+
+
+End Function

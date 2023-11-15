@@ -1,0 +1,47 @@
+
+public function GetDateFileCreated(byval Dt_Created as date,byval Str_FilePath as string) as boolean
+
+'**********************************************************************************
+'
+'    目的：ファイルを作成日を取得する
+'
+'
+'           戻り値   True：  正常終了
+'                    false:  異常
+'
+'            引数   Dt_Created：ファイル作成日   Str_FilePath：ファイルパス
+'
+'
+'    作成者：長谷川宗司
+'
+'************************************************************************************
+ Dim FSO As Object
+ 
+
+
+ On Error GoTo ERR3
+
+ GetDateFileCreated = false
+
+   
+
+   Set FSO = CreateObject("Scripting.FileSystemObject")
+
+    Dt_Created = FSO.GetFile(Str_FilePath).DateCreated
+
+   SET FSO = nothing
+
+ GetDateFileCreated = true
+
+exit function
+
+
+ ERR3:
+   msg = "エラー発生アプリ: " & Err.Source & vbCrLf & _
+            "エラー番号: " & Err.Number & vbCrLf & _
+            "エラー内容: " & Err.Description & vbCrLf
+   
+   MsgBox "ERR3" & vbCrLf & msg
+
+end function
+

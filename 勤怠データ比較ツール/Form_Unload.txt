@@ -1,0 +1,39 @@
+Private Sub Form_Unload(Cancel As Integer)
+'**********************************************************************************
+'
+'    目的：フォームの読み込み解除時（MSAccessを閉じる時）にテーブルデータを削除
+'
+'
+'
+'　　　　引数   Cancel : （自動割付）
+'
+'
+'
+'
+'    作成者：長谷川宗司
+'
+'************************************************************************************
+
+ On Error GoTo ERR11
+
+
+  'テーブルデータを削除
+  dim Boo_F_DTDSQL as boolean
+
+   Boo_F_DTDSQL = Fnc_DeleteTblDataSQL'モジュール呼び出し
+
+
+
+ Exit sub
+
+ ERR11:
+   msg = "エラー発生アプリ: " & Err.Source & vbCrLf & _
+            "エラー番号: " & Err.Number & vbCrLf & _
+            "エラー内容: " & Err.Description & vbCrLf
+   
+   MsgBox "ERR11" & vbCrLf & msg
+
+
+
+
+End Sub

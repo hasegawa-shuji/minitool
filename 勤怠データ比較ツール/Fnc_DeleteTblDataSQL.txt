@@ -1,0 +1,59 @@
+Public Function Fnc_DeleteTblDataSQL() As Boolean
+
+'**********************************************************************************
+'
+'    目的：テーブルデータ削除（初期化）
+'
+'
+'           戻り値　 True：　正常終了
+'　　　　　　　　　　false: 　異常
+'
+'            引数　無し
+'
+'    作成者：長谷川宗司
+'
+'************************************************************************************
+
+
+
+  On Error GoTo ERR10  'エラー処理ラベルへ
+
+  Fnc_DeleteTblDataSQL = False
+
+
+ 
+   Dim cn As New ADODB.Connection  'データベース接続用変数の設定
+   Dim rs As New ADODB.Recordset   'レコードセット用変数
+
+   '自データベースの接続設定
+    Set cn = CurrentProject.Connection
+
+   'テーブルを開く
+    rs.Open T_attendA, cn, adOpenKeyset, adLockOptimistic
+    rs.Open T_attendB, cn, adOpenKeyset, adLockOptimistic
+
+    delete * from T_attendA;
+    delete * from T_attendB;
+
+    
+   'テーブルを閉じる。変数初期化
+    rs.Close: Set rs = Nothing
+
+   'データベースの接続を解除する。変数初期化
+    cn.Close: Set cn = Nothing
+
+
+  Fnc_DeleteTblDataSQL = True
+
+Exit Function
+
+ 
+ERR10:
+   msg = "エラー発生アプリ: " & Err.Source & vbCrLf & _
+            "エラー番号: " & Err.Number & vbCrLf & _
+            "エラー内容: " & Err.Description & vbCrLf
+   
+   MsgBox "ERR10" & vbCrLf & msg
+
+
+End Function

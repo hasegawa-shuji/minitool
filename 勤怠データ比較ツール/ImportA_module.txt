@@ -1,0 +1,69 @@
+
+Public Function ImportA(ByVal Dt_Created_A As Date,byval Str_FilePath_A As String, _
+                        byval Str_FileName_A As String) As Boolean
+
+'**********************************************************************************
+'
+'    目的：ファイルA（先）をインポートする
+'
+'
+'            戻り値   True: 正常終了   False: 異常
+'
+'
+'            引数   Dt_Created_A：ファイル作成日   Str_FilePath_A：ファイルパス
+'                   Str_FileName_A：ファイル名
+'
+'    作成者：長谷川宗司
+'
+'************************************************************************************
+
+ Dim Boo_FS_Ret As Boolean
+ Dim Str_FilePath As String
+ 'Dim Str_FilePath_A As String
+ Dim Str_FileName As String
+ 'Dim Str_FileName_A As String
+ Dim Boo_GDFC_Ret As Boolean
+ Dim Dt_Created As Date
+ 'Dim Dt_Created_A As Date
+ Dim Boo_IT_Ret As Boolean
+ Dim Str_Imp As String
+ Dim Str_Tbl As String
+ Dim msg As Variant
+ 
+
+
+   On Error GoTo ERR1
+   
+   ImportA = False
+
+  
+     Boo_FS_Ret = FileSelect(Str_FilePath, Str_FileName)
+
+       Str_FilePath_A = Str_FilePath
+       Str_FileName_A = Str_FileName
+       
+     
+     Boo_GDFC_Ret = GetDateFileCreated(Dt_Created, Str_FilePath)
+
+       Dt_Created_A = Dt_Created
+       
+
+     Boo_IT_Ret = ImportTable(Str_Imp, Str_Tbl, Str_FilePath)
+     
+       Str_Imp = "ImpA"
+       Str_Tbl = "T_attendA"
+       
+       
+    ImportA = True
+
+
+Exit Function
+
+ERR1:
+   msg = "エラー発生アプリ: " & Err.Source & vbCrLf & _
+            "エラー番号: " & Err.Number & vbCrLf & _
+            "エラー内容: " & Err.Description & vbCrLf
+   
+   MsgBox "ERR1" & vbCrLf & msg
+
+End Function

@@ -1,0 +1,33 @@
+Public Function AvrgTime(Int_SpendTime As Integer, Int_Avg As Integer) As Variant
+
+  AvrgTime = false
+  
+  On Error Goto ErrLabel
+
+  Dim Con as ADODB.Connection
+  Dim Rs as ADODB.Recordset
+    
+  Set Con = CurrentProject.Connection
+  Set Rs = New ADODB.Recordset
+
+  Rs.Open "T_TimeRec", Con, AdOpenKeySet, adLockOpimistic
+
+    
+  UPDATE T_TimeRec SET BtnName = Form_F_Test.Txt_PCName.value, SpendSecond = Int_SpendTime
+
+  SELECT Round(Avg([SpendSecond])) AS HEIKIN_T
+  FROM T_TimeRec
+  WHERE (T_TimeRec.Btn_Name)= Form_F_Test.Txt_PCName.value;
+ 
+  Int_Avg = Rs.Fields(0).Value
+
+  AvrgTime = True
+
+ Exit Function
+ 
+ErrLabel:
+  
+  MsgBox Error$
+
+
+end function

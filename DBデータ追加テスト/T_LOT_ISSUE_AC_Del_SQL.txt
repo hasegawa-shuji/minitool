@@ -1,0 +1,60 @@
+public function T_LOT_ISSUE_AC_Del_SQL() as variant
+' ************************************************************************************************
+' ***
+' ***   ◆テーブル削除処理
+' ***
+' ***   ◇概要　：
+' ***           ：
+' ***     戻り値：
+' ***
+' ************************************************************************************************
+'------------------------------------------------------------------------------------------
+On Error GoTo Err_Handler
+'------------------------------------------------------------------------------------------
+
+Dim Obj_CN As New ADODB.Connection
+Dim Obj_CMD As New ADODB.Command
+Dim Str_SQL As String
+'Dim Str_SQL1 As String
+
+  Set Obj_CN = CurrentProject.Connection
+  
+  Str_PCName = Form_F_Test.Txt_PCName.Value
+
+  Str_SQL = ""
+  Str_SQL = "DELETE FROM T_LOT_ISSUE_AC WHERE (TOU_KANRI_NO = '" & Str_PCName & "');"
+
+  'Str_SQL1 = ""
+  'Str_SQL1 = "DELETE FROM T_DeleteTime; "
+
+
+
+  With Obj_CMD
+      .ActiveConnection = Obj_CN
+
+      .CommandText = Str_SQL
+      .Execute
+      
+      '.CommandText = Str_SQL1
+      '.Execute
+  End With
+
+
+  Obj_CN.Close: Set Obj_CN = Nothing
+
+
+
+
+    Exit Function
+
+
+
+    
+Err_Handler:
+    '--------------------------------------------------------------------------------------
+    ' ◆例外処理：エラー処理
+    '--------------------------------------------------------------------------------------
+    MsgBox Error$ 'エラーメッセージ表示
+    
+End Function
+

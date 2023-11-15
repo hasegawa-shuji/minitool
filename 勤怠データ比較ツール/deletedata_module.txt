@@ -1,0 +1,62 @@
+Public Function DeleteTblData(ByVal Str_Tbl As String) As Boolean
+
+'**********************************************************************************
+'
+'    目的：テーブルをデータ削除（初期化）
+'
+'
+'           戻り値　 True：　正常終了
+'　　　　　　　　　　false: 　異常
+'
+'            引数　Str_Tbl：テーブル名
+'
+'    作成者：長谷川宗司
+'
+'************************************************************************************
+
+
+
+  On Error GoTo ERR5  'エラー処理ラベルへ
+
+  DeleteTblData = False
+
+
+ 
+   Dim cn As New ADODB.Connection  'データベース接続用変数の設定
+   Dim rs As New ADODB.Recordset   'レコードセット用変数
+
+   '自データベースの接続設定
+    Set cn = CurrentProject.Connection
+
+   'テーブルを開く
+    rs.Open Str_Tbl, cn, adOpenKeyset, adLockOptimistic
+
+      Do Until rs.EOF
+
+        rs.Delete
+        rs.MoveNext
+  
+      Loop
+
+    
+   'テーブルを閉じる。変数初期化
+    rs.Close: Set rs = Nothing
+
+   'データベースの接続を解除する。変数初期化
+    cn.Close: Set cn = Nothing
+
+
+  DeleteTblData = True
+
+Exit Function
+
+ 
+ERR5:
+   msg = "エラー発生アプリ: " & Err.Source & vbCrLf & _
+            "エラー番号: " & Err.Number & vbCrLf & _
+            "エラー内容: " & Err.Description & vbCrLf
+   
+   MsgBox "ERR5" & vbCrLf & msg
+
+
+End Function

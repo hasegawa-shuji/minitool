@@ -1,0 +1,47 @@
+Public Function T_TimeRec_Del(byval Str_BtnName as string) As Variant
+' ************************************************************************************************
+' ***
+' ***   ◆テーブル削除処理
+' ***
+' ***   ◇概要　：
+' ***           ：
+' ***     戻り値：
+' ***
+' ************************************************************************************************
+'------------------------------------------------------------------------------------------
+On Error GoTo Err_Handler
+'------------------------------------------------------------------------------------------
+
+dim Obj_CN as New ADODB.connection
+dim Obj_RS as New ADODB.recordset
+'dim Str_BtnName as string
+dim Str_SQL as string
+
+set Obj_CN = currentproject.connection
+
+
+
+ Str_SQL = ""
+ Str_SQL = "SELECT * FROM T_TimeRec WHERE (BtnName = '" & Str_BtnName & "');"
+
+ Obj_RS.Open Str_SQL, Obj_CN, adOpenDynamic, adLockOptimistic
+
+    Do Until Obj_RS.EOF
+        Obj_RS.Delete
+        Obj_RS.MoveNext
+    Loop
+
+
+
+    Exit Function
+
+
+
+    
+Err_Handler:
+    '--------------------------------------------------------------------------------------
+    ' ◆例外処理：エラー処理
+    '--------------------------------------------------------------------------------------
+    MsgBox Error$ 'エラーメッセージ表示
+    
+End Function

@@ -1,0 +1,64 @@
+public function Fnc_FileSave(Byref Str_InitialFileName as string,byref FileFullPath As String) as boolean
+'**********************************************************************************
+'
+'    目的：ファイルを名前を付けて保存する
+'
+'
+'           戻り値   True：  正常終了
+'                    false:  異常
+'
+'            引数   Str_InitialFileName：初期ファイル名     FileFullPath：選択されたファイルパス
+'
+'
+'    作成者：長谷川宗司
+'
+'************************************************************************************
+
+ On Error GoTo ERR6
+
+ 
+  Dim Int_Ret As Integer         'ダイアログ用変数
+  
+  
+  
+  Fnc_FileSave = false
+  
+
+
+     'ダイアログ
+     Dim dlgSA As FileDialog
+
+     Set dlgSA = Application.FileDialog(msoFileDialogSaveAs)
+
+     '初期ファイル名を設定
+     dlgSA.InitialFileName = Str_InitialFileName '"勤怠比較結果" & Format(Now, "yyyymmddhhnnss") & ".csv"
+     'ダイアログ表示         
+     Int_Ret = dlgSA.Show
+     
+        If Int_Ret <> 0 Then
+          'ファイルが選択されたとき
+          '出力先ファイルのフルパスを指定します。
+          FileFullPath = Trim(dlgSA.SelectedItems.Item(1))
+        Else
+          'ファイルが選択されなければブランク
+          FileFullPath = ""
+        End If
+        
+         'ダイアログを初期化
+        Set dlgSA = Nothing
+ 
+ Fnc_FileSave = True
+ 
+Exit Function
+
+ERR6:
+   msg = "エラー発生アプリ: " & Err.Source & vbCrLf & _
+            "エラー番号: " & Err.Number & vbCrLf & _
+            "エラー内容: " & Err.Description & vbCrLf
+   
+   MsgBox "ERR6" & vbCrLf & msg
+
+
+
+end function
+

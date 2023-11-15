@@ -1,0 +1,35 @@
+Private Sub Cmd_ImportA_Click()
+
+'**********************************************************************************
+'
+'    目的：ImportA()を呼び出して、テキストボックスに代入
+'                  
+'
+'    作成者：長谷川宗司
+'
+'************************************************************************************
+
+  Dim Str_FilePath_A As String
+  Dim Str_FileName_A As String
+
+
+  On Error GoTo ERR1
+
+   Boo_IA_Ret =  ImportA(Str_FilePath_A,Str_FileName_A)
+   
+     Me.Txt_Input_Dir_A.Value = Str_FilePath_A
+  
+     Me.Txt_Input_File_A.Value = Str_FileName_A
+
+
+
+exit sub
+
+  ERR1:
+   msg = "エラー発生アプリ: " & Err.Source & vbCrLf & _
+            "エラー番号: " & Err.Number & vbCrLf & _
+            "エラー内容: " & Err.Description & vbCrLf
+   
+   MsgBox "ERR1" & vbCrLf & msg
+
+End Sub

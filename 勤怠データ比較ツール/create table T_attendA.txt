@@ -1,0 +1,29 @@
+create table T_attendA
+(
+status VARCHAR2(10),
+shainNo VARCHAR2(10),
+shimei VARCHAR2(20),
+shozokuNo VARCHAR2(10),
+shozokumei VARCHAR2(20),
+shukkinnissu VARCHAR2(10),
+kekkin VARCHAR2(10),
+yukyunissu VARCHAR2(10),
+tokkyunissuyukyu VARCHAR2(10),
+tokkyunissu VARCHAR2(10),
+daihyounissu VARCHAR2(10),
+shukkinjikan VARCHAR2(10),
+chikokusoutaijikan VARCHAR2(10),
+futuzangyoujikan VARCHAR2(10),
+shinyazangyoujikan VARCHAR2(10),
+shoteinaizangyoujikan VARCHAR2(10),
+houteigaikyujitushukkinjikan VARCHAR2(10),
+houteigaishinyajikan VARCHAR2(10),
+houteikyujitsujikan VARCHAR2(10),
+houteikyujitsushinyajikan VARCHAR2(10),
+htyoukazangyou45 VARCHAR2(10),
+htyoukazangyou60 VARCHAR2(10),
+shinyashoteijikan25 VARCHAR2(10),
+houteiwarimashijikan35 VARCHAR2(10),
+shukunichokukaisu VARCHAR2(10)
+)
+tablespace SANKEI;

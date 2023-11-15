@@ -1,0 +1,7 @@
+    ElseIf cnt = 24 Then 'エラーコードと計量値
+      
+      MsgBox "err_code 確認"
+      
+    ElseIf cnt = 7 Then 'エラーコードのみ
+    
+      MsgBox "err_code 確認"  

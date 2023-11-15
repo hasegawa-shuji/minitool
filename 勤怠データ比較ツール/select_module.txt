@@ -1,0 +1,81 @@
+
+public function FileSelect(byval Str_FilePath as string,byval Str_FileName As String) as boolean
+'**********************************************************************************
+'
+'    目的：ファイルを選択する
+'
+'
+'           戻り値   True：  正常終了
+'                    false:  異常
+'
+'            引数   Str_FilePath：ファイルパス   Str_FileName：ファイル名
+'
+'
+'    作成者：長谷川宗司
+'
+'************************************************************************************
+
+ On Error GoTo ERR2
+
+ FileSelect = false
+
+        '変数定義
+    Dim Int_Ret As Integer         'ダイアログ用変数
+    'Dim Str_FilePath As String     'フルパスの値
+
+'【変数 ファイル名用】
+    Dim Pt As String  'ファイルパス
+    'Dim Str_FileName As String  'ファイル名
+    Dim Pos As Long   '「\」の位置
+
+
+    With Application.FileDialog(msoFileDialogOpen)
+        'ダイアログのタイトルを設定
+        .Title = "ファイルを開くダイアログ"
+        'ファイルの種類を設定
+        .Filters.Clear
+        .Filters.Add "CSVファイル", "*.csv"
+        .FilterIndex = 1
+        '複数ファイル選択を許可しない
+        .AllowMultiSelect = False
+        '初期パスを設定
+        .InitialFileName = CurrentProject.Path
+        'ダイアログを表示
+        Int_Ret = .Show
+
+        If Int_Ret <> 0 Then
+          'ファイルが選択されたとき
+          'そのフルパスを返り値に設定
+          Str_FilePath = Trim(.SelectedItems.Item(1))
+        Else
+          'ファイルが選択されなければブランク
+          Str_FilePath = ""
+        End If
+    End With
+    '選択されたフルパスをテキストボックスへ表示
+    'Me.Txt_Input_Dir.Value = Str_FilePath
+    
+    '■ファイル名の取得
+    Pt = Str_FilePath     'ファイルパス指定
+    Pos = InStrRev(Pt, "\")       '最後尾の「\」の前からの文字数
+    Str_FileName = Mid(Pt, Pos + 1)   'ファイル名
+    'MsgBox Str_FileName
+    'Me.Txt_Input_File.Value = Str_FileName
+    
+    'CSVファイル取り込み
+    'DoCmd.TransferText acImportDelim, "", "T_Samplesheet", Str_FilePath, True, "", 932
+
+
+
+ FileSelect = true
+ 
+exit function 
+
+ ERR2:
+   msg = "エラー発生アプリ: " & Err.Source & vbCrLf & _
+            "エラー番号: " & Err.Number & vbCrLf & _
+            "エラー内容: " & Err.Description & vbCrLf
+   
+   MsgBox "ERR2" & vbCrLf & msg
+
+end function

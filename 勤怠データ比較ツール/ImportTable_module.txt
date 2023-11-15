@@ -1,0 +1,47 @@
+
+
+Public Function ImportTable(ByVal Str_Imp As String, ByVal Str_Tbl As String, _
+                            ByRef Str_FilePath As String) As Boolean
+'**********************************************************************************
+'
+'    目的：テーブルを取り込む
+'
+'
+'           戻り値　 True：　正常終了
+'　　　　　　　　　　false: 　異常
+'
+'            引数　Str_Imp：テーブル定義　Str_Tbl：テーブル名　Str_FilePath：ファイルパス
+'
+'    作成者：長谷川宗司
+'
+'************************************************************************************
+
+ 'dim Str_Imp as string
+ 'dim Str_Tbl as string
+ 
+ 
+
+
+  On Error GoTo ERR4  'エラー処理ラベルへ
+
+  ImportTable = False  '戻り値にFalseを代入
+  
+  
+    DoCmd.TransferText acImportDelim, Str_Imp, Str_Tbl, Str_FilePath ', True, "", 932    'テーブル取り込み処理
+
+
+
+  ImportTable = True  '戻り値にTrueを代入
+  
+Exit Function
+
+ 
+ERR4:
+   msg = "エラー発生アプリ: " & Err.Source & vbCrLf & _
+            "エラー番号: " & Err.Number & vbCrLf & _
+            "エラー内容: " & Err.Description & vbCrLf
+   
+   MsgBox "ERR4" & vbCrLf & msg
+
+
+End Function

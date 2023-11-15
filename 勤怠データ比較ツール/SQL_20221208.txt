@@ -1,0 +1,61 @@
+SELECT T_attendB.ステータス,T_attendB.社員No,T_attendB.氏名,T_attendB.所属No,T_attendB.所属名,
+
+ [T_attendB]![出勤日数]-[T_attendA]![出勤日数] AS 出勤日数,
+ [T_attendB]![欠勤日数]-[T_attendA]![欠勤日数] AS 欠勤日数,
+ [T_attendB]![有休日数]-[T_attendA]![有休日数] AS 有休日数,
+ [T_attendB]![特休日数(有給]-[T_attendA]![特休日数(有給] AS 特休日数_有給,
+ [T_attendB]![特休日数(無給)]-[T_attendA]![特休日数(無給)] AS 特休日数_無給,
+ [T_attendB]![代休日数]-[T_attendA]![代休日数] AS 代休日数,
+ [T_attendB]![出勤時間]-[T_attendA]![出勤時間] AS 出勤時間,
+ [T_attendB]![遅刻早退時間]-[T_attendA]![遅刻早退時間] AS 遅刻早退時間,
+ [T_attendB]![普通残業時間]-[T_attendA]![普通残業時間] AS 普通残業時間,
+ [T_attendB]![深夜残業時間]-[T_attendA]![深夜残業時間] AS 深夜残業時間,
+ [T_attendB]![所定内残業時間]-[T_attendA]![所定内残業時間] AS 所定内残業時間,
+ [T_attendB]![法外休日出勤時間]-[T_attendA]![法外休日出勤時間] AS 法外休日出勤時間,
+ [T_attendB]![法外休日深夜時間]-[T_attendA]![法外休日深夜時間] AS 法外休日深夜時間,
+ [T_attendB]![法定休日時間]-[T_attendA]![法定休日時間] AS 法定休日時間,
+ [T_attendB]![法定休日深夜時間]-[T_attendA]![法定休日深夜時間] AS 法定休日深夜時間,
+ [T_attendB]![45h超過残業]-[T_attendA]![45h超過残業] AS H45h超過残業,
+ [T_attendB]![60h超過残業]-[T_attendA]![60h超過残業] AS H60h超過残業,
+ [T_attendB]![深夜所定時間25%]-[T_attendA]![深夜所定時間25%] AS 深夜所定時間25,
+ [T_attendB]![法定割増時間35%]-[T_attendA]![法定割増時間35%] AS 法定割増時間35,
+ [T_attendB]![宿日直回数]-[T_attendA]![宿日直回数] AS 宿日直回数 
+ 
+
+FROM T_attendA INNER JOIN T_attendB ON T_attendA.社員No = T_attendB.社員No 
+
+
+WHERE (((
+[T_attendB]![出勤日数]-[T_attendA]![出勤日数]+
+[T_attendB]![欠勤日数]-[T_attendA]![欠勤日数]+
+[T_attendB]![有休日数]-[T_attendA]![有休日数]+
+[T_attendB]![特休日数(有給]-[T_attendA]![特休日数(有給]+
+[T_attendB]![特休日数(無給)]-[T_attendA]![特休日数(無給)]+
+[T_attendB]![代休日数]-[T_attendA]![代休日数]+
+[T_attendB]![出勤時間]-[T_attendA]![出勤時間]+
+[T_attendB]![遅刻早退時間]-[T_attendA]![遅刻早退時間]+
+[T_attendB]![普通残業時間]-[T_attendA]![普通残業時間]+
+[T_attendB]![深夜残業時間]-[T_attendA]![深夜残業時間]+
+[T_attendB]![所定内残業時間]-[T_attendA]![所定内残業時間]+
+[T_attendB]![法外休日出勤時間]-[T_attendA]![法外休日出勤時間]+
+[T_attendB]![法外休日深夜時間]-[T_attendA]![法外休日深夜時間]+
+[T_attendB]![法定休日時間]-[T_attendA]![法定休日時間]+
+[T_attendB]![法定休日深夜時間]-[T_attendA]![法定休日深夜時間]+
+[T_attendB]![45h超過残業]-[T_attendA]![45h超過残業]+
+[T_attendB]![60h超過残業]-[T_attendA]![60h超過残業]+
+[T_attendB]![深夜所定時間25%]-[T_attendA]![深夜所定時間25%]+
+[T_attendB]![法定割増時間35%]-[T_attendA]![法定割増時間35%]+
+[T_attendB]![宿日直回数]-[T_attendA]![宿日直回数]
+)<>0));
+
+
+
+
+
+
+
+ 
+ 
+[出勤日数]+[欠勤日数]+[有休日数]+[特休日数_有給]+[特休日数_無給]+[代休日数]+[出勤時間]+
+[遅刻早退時間]+[普通残業時間]+[深夜残業時間]+[所定内残業時間]+[法外休日出勤時間]+[法外休日深夜時間]+
+[法定休日時間]+[法定休日深夜時間]+[45h超過残業]+[60h超過残業]+[深夜所定時間25]+[法定割増時間35]+[宿日直回数]

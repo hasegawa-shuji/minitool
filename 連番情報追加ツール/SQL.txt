@@ -1,0 +1,63 @@
+
+
+
+SELECT T_SerialNumAdd.SerialNo, T_SerialNumAdd.Set_Dat01, T_SerialNumAdd.Create_Date, T_SerialNumAdd.Update_Date, T_SerialNumAdd.Memo
+FROM T_SerialNumAdd
+ORDER BY T_SerialNumAdd.SerialNo;
+
+
+
+             Str_SQL = ""
+             Str_SQL = "SELECT T_SerialNumAdd.SerialNo, T_SerialNumAdd.Set_Dat01, T_SerialNumAdd.Create_Date, T_SerialNumAdd.Update_Date, T_SerialNumAdd.Memo "
+             Str_SQL = "FROM T_SerialNumAdd "
+             Str_SQL = "ORDER BY T_SerialNumAdd.SerialNo;"
+             
+             
+             
+INSERT INTO T_SerialNumAdd ( SerialNo, Set_Dat01, Create_Date, Update_Date, [Memo] ) VALUES ('" & Str_SN & "','"& Str_Set_Dat01 & "','" & Dt_Created & "','" & Dt_Created & "','" & Str_Memo & "')
+SELECT T_SerialNumAdd.SerialNo, T_SerialNumAdd.Set_Dat01, T_SerialNumAdd.Create_Date, T_SerialNumAdd.Update_Date, T_SerialNumAdd.Memo
+FROM T_SerialNumAdd;
+
+
+             Str_SQL = ""
+             Str_SQL = "INSERT INTO T_SerialNumAdd ( SerialNo, Set_Dat01, Create_Date, Update_Date, [Memo] ) "
+             Str_SQL = "VALUES ('" & Str_SN & "','"& Str_Set_Dat01 & "','" & Dt_Created & "','" & Dt_Created & "','" & Str_Memo & "') "
+             Str_SQL = "SELECT T_SerialNumAdd.SerialNo, T_SerialNumAdd.Set_Dat01, T_SerialNumAdd.Create_Date, T_SerialNumAdd.Update_Date, T_SerialNumAdd.Memo "
+             Str_SQL = "FROM T_SerialNumAdd;"
+
+
+
+INSERT INTO T_SerialNumAdd ( SerialNo )
+SELECT Q_Serial06.SerialNo
+FROM Q_Serial06;
+
+             'カスタマイズシリアル追加
+             Str_SQL = ""
+             Str_SQL = "INSERT INTO T_SerialNumAdd ( SerialNo ) "
+             Str_SQL = "SELECT Q_Serial06.SerialNo "
+             Str_SQL = "FROM Q_Serial06;"
+             
+             
+             
+             'フォーム入力から更新
+             Str_SQL = ""
+             Str_SQL = "UPDATE T_SerialNumAdd "
+             Str_SQL = "SET Set_Dat01='" & Str_Set_Dat01 & "',Create_Date='" & Dt_Created & "',Update_Date='" & Dt_Created & "',[Memo]='" & Str_Memo & "' "
+             Str_SQL = "WHERE Set_Dat01='';"
+
+
+
+Str_SQL = ""
+Str_SQL = Str_SQL & "INSERT INTO T_SerialNumAdd( SerialNo ) VALUES('" & Str_SerialNo & "');"
+  'SQLを実行
+cn.Execute Str_SQL
+
+
+
+
+
+
+
+
+
+

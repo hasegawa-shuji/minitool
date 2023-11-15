@@ -1,0 +1,87 @@
+Public Function ImportC(ByRef Str_FilePath_C As String, ByRef Str_FileName_C As String) As Boolean
+
+'**********************************************************************************
+'
+'    目的：ファイルC（原本）をインポートする
+'
+'
+'            戻り値   True: 正常終了   False: 異常
+'
+'
+'            引数   Str_FilePath_C：ファイルパス
+'
+'                   Str_FileName_C：ファイル名
+'
+'
+'    作成者：長谷川宗司
+'
+'************************************************************************************
+
+
+  Dim Str_FilePath As String
+  Dim Str_FileName As String
+  Dim Boo_IC_Ret As Boolean
+  Dim msg As Variant
+  Dim Str_Imp As String
+  Dim Str_Tbl As String
+  Dim Boo_FS_Ret As Boolean
+  Dim Boo_GDFC_Ret As Boolean
+  Dim Boo_IT_Ret As Boolean
+  Dim Boo_DTD_Ret As Boolean
+  Dim Dt_Created As Date
+
+
+
+  On Error GoTo ERR1_1
+  
+  Boo_IC_Ret = False
+  
+  
+      'クラスモジュール呼び出し
+    Dim cCP As cls_CommonProcess
+    Set cCP = New cls_CommonProcess
+
+
+  
+  
+     Boo_FS_Ret = cCP.FileSelect(Str_FilePath, Str_FileName)  'ファイルを選択
+     
+          
+         Str_FilePath_C = Str_FilePath  'ファイルパスをC専用変数に代入
+         Str_FileName_C = Str_FileName  'ファイル名をC専用変数に代入
+         
+        Form_F_Control.Txt_Input_Dir_C.Value = Str_FilePath_C  'テキストボックスにフルパスを代入
+        Form_F_Control.Txt_Input_File_C.Value = Str_FileName_C 'テキストボックスにファイル名を代入
+        
+    
+    
+    
+    
+        Str_Tbl = "T_attendC"  'テーブル名を代入
+    
+     Boo_DTD_Ret = cCP.DeleteTblData(Str_Tbl) 'テーブルデータを削除（初期化）
+     
+
+        Str_Imp = "ImpC"        'テーブル定義名を代入
+    
+     Boo_IT_Ret = cCP.ImportTable(Str_Imp, Str_Tbl, Str_FilePath) 'テーブルにデータを書き込む 
+
+               
+     
+    Set cCP = Nothing
+
+
+   Boo_IC_Ret = True
+
+Exit Function
+
+ERR1_1:
+   msg = "エラー発生アプリ: " & Err.Source & vbCrLf & _
+            "エラー番号: " & Err.Number & vbCrLf & _
+            "エラー内容: " & Err.Description & vbCrLf
+   
+   MsgBox "ERR1_1" & vbCrLf & msg
+   
+   Set cCP = Nothing
+
+End Function
